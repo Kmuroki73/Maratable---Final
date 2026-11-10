@@ -1,41 +1,67 @@
 (function(){
   const menu=document.querySelector('[data-menu]');
   const drawer=document.querySelector('.drawer');
-  if(menu&&drawer){menu.addEventListener('click',()=>drawer.classList.toggle('open'));drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>drawer.classList.remove('open')))}
+  if(menu&&drawer){
+    const closeMenu=()=>{drawer.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-label','Open menu');};
+    menu.addEventListener('click',()=>{
+      const isOpen=drawer.classList.toggle('open');
+      menu.setAttribute('aria-expanded',isOpen?'true':'false');
+      menu.setAttribute('aria-label',isOpen?'Close menu':'Open menu');
+    });
+    drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
+    document.addEventListener('keydown',event=>{if(event.key==='Escape')closeMenu();});
+  }
 
   const stage=document.querySelector('[data-hero-carousel]');
   if(stage){
     const cards=[...stage.querySelectorAll('.hero-card')];
     const dots=[...stage.querySelectorAll('.hero-dots button')];
     let active=0;
-    const desktop=[
-      {x:0,y:-108,r:1,s:1.03,z:5},
-      {x:172,y:28,r:8,s:.92,z:4},
-      {x:28,y:164,r:3,s:.84,z:2},
-      {x:-165,y:105,r:-8,s:.89,z:3}
-    ];
-    const mobile=[
-      {x:0,y:-60,r:0,s:.98,z:5},
-      {x:88,y:22,r:6,s:.84,z:4},
-      {x:10,y:96,r:3,s:.74,z:2},
-      {x:-86,y:62,r:-6,s:.86,z:3}
-    ];
+    let timer=null;
+    const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const positions={
+      desktop:[
+        {x:0,y:0,r:0,s:1.02,z:5},
+        {x:174,y:24,r:8,s:.82,z:4},
+        {x:-142,y:112,r:-7,s:.78,z:3}
+      ],
+      mobile:[
+        {x:0,y:0,r:0,s:.98,z:5},
+        {x:92,y:18,r:7,s:.77,z:4},
+        {x:-74,y:84,r:-6,s:.74,z:3}
+      ]
+    };
     function render(){
-      const m=window.innerWidth<=560?mobile:window.innerWidth<=820?desktop.map((p,i)=>({...p,x:p.x*.72,y:p.y*.78,s:p.s*.94})):desktop;
-      cards.forEach((c,i)=>{
-        const rel=(i-active+cards.length)%cards.length;
-        const p=m[rel];
-        c.style.transform=`translate(${p.x}px,${p.y}px) rotate(${p.r}deg) scale(${p.s})`;
-        c.style.zIndex=p.z; c.style.opacity=rel===0?'1':'.88';
-        c.style.filter=rel===0?'brightness(1.08) saturate(1.08)':'brightness(.88) saturate(.9)';
+      const mobile=window.innerWidth<=560;
+      const layout=mobile?positions.mobile:positions.desktop;
+      cards.forEach((card,index)=>{
+        const relative=(index-active+cards.length)%cards.length;
+        const pos=layout[relative];
+        card.style.transform=`translate(${pos.x}px,${pos.y}px) rotate(${pos.r}deg) scale(${pos.s})`;
+        card.style.zIndex=String(pos.z);
+        card.style.opacity=relative===0?'1':'.92';
+        card.classList.toggle('is-active',relative===0);
+        card.setAttribute('aria-hidden',relative===0?'false':'true');
       });
-      dots.forEach((d,i)=>d.classList.toggle('active',i===active));
+      dots.forEach((dot,index)=>{
+        const selected=index===active;
+        dot.classList.toggle('active',selected);
+        dot.setAttribute('aria-pressed',selected?'true':'false');
+      });
     }
-    dots.forEach((d,i)=>d.addEventListener('click',()=>{active=i;render()}));
-    let timer=setInterval(()=>{active=(active+1)%cards.length;render()},5200);
-    stage.addEventListener('mouseenter',()=>clearInterval(timer));
-    stage.addEventListener('mouseleave',()=>{clearInterval(timer);timer=setInterval(()=>{active=(active+1)%cards.length;render()},5200)});
-    window.addEventListener('resize',render); render();
+    function stop(){if(timer){window.clearInterval(timer);timer=null;}}
+    function start(){
+      stop();
+      if(!reduceMotion && !document.hidden) timer=window.setInterval(()=>{active=(active+1)%cards.length;render();},5200);
+    }
+    dots.forEach((dot,index)=>dot.addEventListener('click',()=>{active=index;render();start();}));
+    stage.addEventListener('mouseenter',stop);
+    stage.addEventListener('mouseleave',start);
+    stage.addEventListener('focusin',stop);
+    stage.addEventListener('focusout',start);
+    document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
+    window.addEventListener('resize',render,{passive:true});
+    render();start();
   }
 
   document.querySelectorAll('[data-year]').forEach(el=>el.textContent=new Date().getFullYear());

@@ -4,54 +4,59 @@
 
   const status = document.getElementById('form-status');
   const button = form.querySelector('button[type="submit"]');
-  const recipients = ['info@maratable.com', 'nancy@maratable.com'];
+  const languageIndex = { de: 0, fr: 1, it: 2, es: 3 };
+  function message(key) {
+    const language = document.documentElement.lang || 'en';
+    const entry = (window.MARATABLE_TRANSLATIONS || {})[key];
+    return language === 'en' ? key : (entry && entry[languageIndex[language]]) || key;
+  }
 
-  form.addEventListener('submit', function (event) {
+  form.addEventListener('submit', async function (event) {
     event.preventDefault();
     status.textContent = '';
     status.className = 'form-status';
-
     if (!form.reportValidity()) return;
 
     const data = new FormData(form);
-    // Honeypot: silently ignore automated submissions.
-    if (String(data.get('website') || '').trim()) return;
+    const payload = {
+      name: String(data.get('name') || '').trim(),
+      email: String(data.get('email') || '').trim(),
+      type: String(data.get('type') || 'General enquiry').trim(),
+      message: String(data.get('message') || '').trim(),
+      website: String(data.get('website') || '').trim()
+    };
 
-    const name = String(data.get('name') || '').trim();
-    const email = String(data.get('email') || '').trim();
-    const type = String(data.get('type') || 'General enquiry').trim();
-    const message = String(data.get('message') || '').trim();
-
-    if (name.length < 2 || name.length > 120 || email.length > 254 || message.length < 5 || message.length > 5000) {
-      status.textContent = 'Please check your details and try again.';
+    if (payload.name.length < 2 || payload.name.length > 120 ||
+        payload.email.length > 254 || payload.message.length < 5 ||
+        payload.message.length > 5000) {
+      status.textContent = message('Please check your details and try again.');
       status.classList.add('error');
       return;
     }
 
-    const subject = '[MaraTable Website] ' + type;
-    const body = [
-      'New MaraTable website enquiry',
-      '',
-      'Name: ' + name,
-      'Email: ' + email,
-      'Enquiry type: ' + type,
-      '',
-      'Message:',
-      message,
-      '',
-      'Please reply directly to the visitor at: ' + email
-    ].join('\n');
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    button.textContent = message('Sending…');
 
-    // mailto opens the visitor's configured email application; it cannot send silently.
-    const mailto = 'mailto:' + recipients.join(',') +
-      '?subject=' + encodeURIComponent(subject) +
-      '&body=' + encodeURIComponent(body);
-
-    status.textContent = 'Your enquiry opens in an email draft addressed to both MaraTable contacts. Review it and press Send in your email app.';
-    status.classList.add('success');
-    document.dispatchEvent(new CustomEvent('maratable:contact-compose'));
-
-    // Assign after validation and synchronously from the user submit action.
-    window.location.href = mailto;
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'Your message could not be sent. Please try again.');
+      status.textContent = message('Thank you. Your enquiry has been sent to MaraTable. We will be in touch.');
+      status.classList.add('success');
+      form.reset();
+      document.dispatchEvent(new CustomEvent('maratable:contact-sent'));
+    } catch (error) {
+      status.textContent = message('We could not send your message. Please email info@maratable.com or contact us on WhatsApp.');
+      status.classList.add('error');
+    } finally {
+      button.disabled = false;
+      button.removeAttribute('aria-busy');
+      button.textContent = message('Send enquiry →');
+    }
   });
 })();

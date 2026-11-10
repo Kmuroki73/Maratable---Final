@@ -1,21 +1,33 @@
-# Publish this release to the MaraTable GitHub repository
+# Publish the MaraTable release candidate to GitHub
 
-The destination repository `Kmuroki73/Maratable---Final` was checked and is empty. This release should be pushed to a review branch first, leaving the default branch untouched until the site is approved.
+The uploaded source matches the current `main` branch for the core website files. The corrected package is prepared locally and should be reviewed in a separate release branch before production deployment.
 
-## Windows / Git Bash
-1. Download `MaraTable_Africa_Focused_Release_FINAL.zip` and extract it to a folder, e.g. `C:\MaraTable_Africa_Focused_Release_FINAL`.
-2. Open Git Bash in that extracted folder.
-3. Run:
+## Windows PowerShell
+1. Extract `MaraTable_Final_Release_Candidate.zip` into a working folder.
+2. Open PowerShell in that folder.
+3. Check the current branch and status before committing:
 
-```bash
-git init -b release/africa-focused-final
-git add .
-git commit -m "Prepare final Africa-focused MaraTable site"
-git remote add origin https://github.com/Kmuroki73/Maratable---Final.git
-git push -u origin release/africa-focused-final
+```powershell
+git status
+git branch --show-current
 ```
 
-Git may ask you to authenticate with GitHub. Do not put passwords or access tokens into the command.
+4. If this is a fresh clone, create a release branch from the repository's current main branch:
 
-## Vercel preview
-Import `Kmuroki73/Maratable---Final` into Vercel and select `release/africa-focused-final` as the deployment branch. Use the `Other` framework preset, no build command, and the repository root as the output directory. Preview it first; do not attach `maratable.com` until Nancy approves and the release gates in `QA_AUDIT.md` pass.
+```powershell
+git switch main
+git pull
+git switch -c release/maratable-final
+```
+
+5. Copy the corrected package contents into the repository folder, then:
+
+```powershell
+git add .
+git commit -m "Prepare MaraTable final release candidate"
+git push -u origin release/maratable-final
+```
+
+6. Import the release branch into Vercel as a Preview deployment. Do not merge or attach the production domain until Resend environment variables are configured and the preview contact test succeeds.
+
+Never commit `.env` files, Resend API keys or other credentials.

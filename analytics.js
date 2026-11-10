@@ -14,10 +14,9 @@
     tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
     document.head.appendChild(tag);
 
-    // A lead event is sent only when the visitor opens a pre-addressed email draft.
-    // mailto does not confirm that the visitor actually pressed Send.
-    document.addEventListener('maratable:contact-compose', function () {
-      window.gtag('event', 'contact_email_draft_opened', {
+    // Record a form submission only after the Resend API accepts the message.
+    document.addEventListener('maratable:contact-sent', function () {
+      window.gtag('event', 'generate_lead', {
         event_category: 'contact',
         event_label: 'website_contact_form'
       });

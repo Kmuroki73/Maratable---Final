@@ -1,19 +1,32 @@
-# MaraTable website release notes
+# MaraTable final release setup
 
-## Current implementation
-- Static HTML/CSS/JavaScript site. No framework build is required.
-- Contact form uses a `mailto:` handoff to `info@maratable.com` and `nancy@maratable.com`. The visitor must send the message in their own email application; website delivery cannot be guaranteed in this mode.
-- Google Analytics 4 is configurable in `analytics-config.js`. The Measurement ID is intentionally blank; the site collects no GA events until the owner sets the real `G-...` ID.
-- Language selector provides English, German, French, Italian and Spanish phrase translations across all pages. The selected language is remembered in the browser. Review the translation dictionary before production; unknown text intentionally falls back to English rather than being machine-translated.
-- Footer contact/location text lists Berlin · Nairobi · Zürich, without claiming those are registered offices.
-- Logo and existing dark-green/gold layout are retained. Supporting imagery has been refreshed/reselected and rewritten as optimized editorial image assets.
+## Required Vercel environment variables
+| Variable | Purpose |
+|---|---|
+| `RESEND_API_KEY` | Private Resend sending API key |
+| `RESEND_FROM` | Sender address on a domain verified by Resend |
+| `RESEND_TO` | Optional comma-separated inboxes; defaults to `info@maratable.com,nancy@maratable.com` |
 
-## Before production
-1. Nancy should add the actual GA4 Measurement ID in `analytics-config.js` and verify page views using GA4 Realtime/Tag Assistant.
-2. Test the email form with an email app configured and confirm both addresses appear as recipients. The visitor must press Send.
-3. Review all translations with a fluent speaker for final commercial nuance.
-4. Test desktop/mobile rendering, navigation, image loading and accessibility in a browser preview before connecting production.
-5. Review consent/privacy requirements for the intended markets before enabling analytics.
+Use a sender such as `MaraTable Website <website@maratable.com>` only after Resend verifies the domain and its DNS records are published. Do not commit API credentials.
 
-## Release status
-Candidate for repository preview; not declared production-verified. No deployment to the live domain was performed by this package preparation.
+## Contact verification
+1. Configure environment variables for Preview.
+2. Deploy a Preview.
+3. Submit a test from a real email address.
+4. Confirm the API response is successful and both recipient inboxes receive the message.
+5. Reply to the test to verify the visitor email is set as Reply-To.
+6. Test invalid inputs, an empty honeypot and a filled honeypot.
+7. Repeat against Production after approval.
+
+A successful Resend API response means the provider accepted the send request; verify actual inbox receipt separately.
+
+## Deployment
+Deploy the repository root with Vercel's `Other` framework preset, no build command and no install command. `api/contact.js` is deployed as a Vercel Function.
+
+## Remaining client-owned items
+- Resend API key and verified sending domain
+- Final approval of Nancy's public profile copy and portrait crop
+- Maya's approved photo, title and biography
+- GA4 Measurement ID, if analytics is wanted
+- Fluent review of German, French, Italian and Spanish translations
+- Confirmation of the preferred canonical hostname (`maratable.com` or `www.maratable.com`)
