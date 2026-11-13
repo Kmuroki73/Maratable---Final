@@ -5,7 +5,7 @@ Static HTML/CSS/JavaScript website for MaraTable Group. The site has no front-en
 ## Pages
 - `index.html` — homepage
 - `company.html` — company story and Nancy Hauschild profile
-- `products.html` — frozen fruits, vegetables, berries, peas, honey and foodservice
+- `products.html` — frozen fruits, vegetables, berries, peas, honey, roasted coffee, unroasted green coffee and foodservice
 - `resources.html` — quality approach
 - `responsibility.html` — responsibility and sourcing
 - `export.html` — international supply
@@ -20,7 +20,7 @@ Approved MaraTable editorial images are in `assets/`:
 - `mango.webp`, `pineapple.webp`, `mixed-berries.webp`
 - `vegetables.webp`, `green-peas.webp`, `natural-honey.webp`
 
-The existing brand logo and Nancy portrait are retained. The product and editorial photography references use the approved image set.
+The existing brand logo and Nancy portrait are retained. Esther Nyiva's Operations profile is placed directly below Nancy's profile on the company page. The product and editorial photography references use the approved image set.
 
 ## Contact form — Resend
 The contact form posts to the first-party Vercel function at `/api/contact`, which sends through Resend's API. No Resend key is included in source control.
@@ -44,7 +44,7 @@ If Resend is not configured, the API returns a clear service-unavailable respons
 The existing three-image layered composition is retained. Its rotation, dot controls, pause-on-hover/focus and reduced-motion behaviour are implemented in `script.js`.
 
 ## SEO
-- Page-specific titles, descriptions, canonical URLs and social metadata
+- Page-specific titles, descriptions, canonical URLs and social metadata, including coffee product search terms
 - `sitemap.xml` and `robots.txt`
 - Organization JSON-LD on the homepage
 

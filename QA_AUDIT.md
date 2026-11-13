@@ -5,7 +5,9 @@
 - Removed superseded product photos from the deployable assets folder. The existing logo and Nancy's original portrait remain.
 - Updated the homepage hero while retaining its three-image layered composition. Three approved images are connected to the rotation and dot controls.
 - Added pause-on-hover/focus, accessible control labels, responsive positions and reduced-motion support.
-- Retained Nancy's existing portrait and introduced a premium founder profile card without inventing credentials or achievements.
+- Retained Nancy's existing portrait and founder profile card.
+- Added Esther Nyiva's supplied portrait and Operations profile directly below Nancy's profile; biography is limited to a role-level description.
+- Added separate Roasted Coffee and Unroasted (Green) Coffee options to the products and store enquiry pages using the supplied coffee image.
 - Replaced the unrelated founder portrait on the responsibility page with approved farm imagery.
 - Applied a shared editorial card treatment to product, statistic, panel, feature and profile cards.
 - Updated the store enquiry cards to include the visible product range.
@@ -24,7 +26,8 @@
 - No broken local image, script or stylesheet references found.
 - Only approved product/hero photographs are referenced by the pages; the original logo and Nancy portrait are retained.
 - All JavaScript files pass `node --check`.
-- `sitemap.xml` parses as valid XML and contains 10 page URLs.
+- `sitemap.xml` parses as valid XML and contains the site's 10 page URLs with updated last-modified dates.
+- Product metadata now includes roasted coffee and unroasted green coffee search terms.
 - `vercel.json` parses as valid JSON.
 - Resend function mock tests passed for accepted submission, honeypot, invalid form data and rejected origin.
 - A 390px mobile visual preview was generated and inspected.
@@ -37,7 +40,7 @@
 - Google Search Console indexing and sitemap submission have not been performed.
 - GA4 remains disabled because the client's actual Measurement ID is blank.
 - German, French, Italian and Spanish copy needs final fluent-speaker review.
-- Maya's profile is intentionally pending her approved image, name/title and biography.
+- Esther's final title wording and biography should be approved by MaraTable before production if further detail is desired.
 
 ## Release decision
 This is a corrected Vercel-ready release candidate, not a certified production handover yet. Production approval depends on configuring Resend, confirming real email receipt and completing Preview QA. No credentials or external account changes have been fabricated.
