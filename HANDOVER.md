@@ -1,44 +1,21 @@
-# MaraTable Group — website handover
+# MaraTable Group — final release handover
 
-## What is included
-- Ten static website pages
-- Responsive stylesheet and front-end JavaScript
-- Approved editorial product and farm photography
-- Nancy's existing portrait and the MaraTable logo
-- English, German, French, Italian and Spanish phrase dictionary
-- Resend-backed Vercel contact endpoint
-- SEO metadata, sitemap, robots file and Organization structured data
-- QA report and deployment configuration
+## Included
+- Existing MaraTable Group website pages and visual identity retained
+- Updated product catalogue imagery from the approved image set
+- Four-image rotating homepage hero, including premium roasted coffee
+- Healthy Kids landing-page feature and dedicated page using the approved two-child breakfast image
+- General child-health and nutrition messaging (not school-programme positioning)
+- Esther Nyiva's updated Head of Operations profile and contact details
+- Public contact form recipient fixed to `info@maratablegroup.com`
+- Updated sitemap and robots reference
+- Responsive CSS and carousel support for four slides
+- Vercel serverless contact endpoint
 
-## Deploy
-Import the project into Vercel:
-- Framework preset: `Other`
-- Root directory: repository root
-- Build command: empty
-- Output directory: repository root
-- Install command: empty
+## Deployment
+The website is static HTML and does not require a build command. Use Vercel preset `Other`, repository root as the project root and output directory, with no install/build command.
 
-The website is static HTML and does not need a build command. Vercel detects `api/contact.js` as a serverless function.
+## Contact form configuration
+Set `RESEND_API_KEY` and `RESEND_FROM` in Vercel. The sender address must belong to a domain verified in Resend. The recipient is fixed in the API to `info@maratablegroup.com`; no `RESEND_TO` override is used.
 
-## Configure Resend before testing the form
-In Vercel Project Settings → Environment Variables, add:
-- `RESEND_API_KEY`
-- `RESEND_FROM`
-- `RESEND_TO` (optional; defaults to `info@maratable.com,nancy@maratable.com`)
-
-The sender domain must first be verified in Resend and its DNS records published. Never place the API key in HTML, browser JavaScript or Git.
-
-After adding variables, redeploy Preview and send a real test enquiry. Confirm both inboxes receive it and that Reply-To uses the visitor's address. Do not connect Production until this test passes.
-
-## Client items still required
-1. Resend API key and verified sender setup.
-2. Approval of Nancy's final portrait crop and profile copy.
-3. Maya's approved photo, role/title and biography.
-4. GA4 Measurement ID, if tracking is required.
-5. Fluent review of the four non-English translations.
-6. Confirmation that `maratable.com` (without `www`) is the preferred canonical domain.
-
-## Important functional scope
-- The Store page is an enquiry catalogue, not an online checkout.
-- WhatsApp links open a conversation with the existing MaraTable contact number.
-- The contact form sends email through Resend only after the Vercel environment variables are configured.
+A mocked API test passed. A real Preview submission is still required after credentials are configured.

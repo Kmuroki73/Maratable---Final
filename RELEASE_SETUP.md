@@ -5,7 +5,7 @@
 |---|---|
 | `RESEND_API_KEY` | Private Resend sending API key |
 | `RESEND_FROM` | Sender address on a domain verified by Resend |
-| `RESEND_TO` | Optional comma-separated inboxes; defaults to `info@maratable.com,nancy@maratable.com` |
+| `RESEND_TO` | Optional comma-separated inboxes; defaults to `info@maratablegroup.com,nancy@maratable.com` |
 
 Use a sender such as `MaraTable Website <website@maratable.com>` only after Resend verifies the domain and its DNS records are published. Do not commit API credentials.
 

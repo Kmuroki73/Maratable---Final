@@ -21,14 +21,16 @@
     const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const positions={
       desktop:[
-        {x:0,y:0,r:0,s:1.02,z:5},
-        {x:174,y:24,r:8,s:.82,z:4},
-        {x:-142,y:112,r:-7,s:.78,z:3}
+        {x:0,y:0,r:0,s:1.02,z:8},
+        {x:174,y:24,r:8,s:.82,z:7},
+        {x:-142,y:112,r:-7,s:.78,z:6},
+        {x:-170,y:-72,r:6,s:.72,z:5}
       ],
       mobile:[
-        {x:0,y:0,r:0,s:.98,z:5},
-        {x:92,y:18,r:7,s:.77,z:4},
-        {x:-74,y:84,r:-6,s:.74,z:3}
+        {x:0,y:0,r:0,s:.98,z:8},
+        {x:92,y:18,r:7,s:.77,z:7},
+        {x:-74,y:84,r:-6,s:.74,z:6},
+        {x:-82,y:-48,r:5,s:.68,z:5}
       ]
     };
     function render(){

@@ -127,3 +127,34 @@ a[target="_blank"]{text-underline-offset:3px}
   *,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .hero-carousel .hero-card{will-change:auto}
 }
+
+/* MaraTable Group release additions */
+.executive-email{display:inline-block;margin:10px 0 12px;color:#9a742f;font-size:.78rem;text-decoration:none}
+.executive-email:hover{text-decoration:underline}
+.healthy-kids-feature .media-card img{min-height:390px}
+@media(max-width:760px){.healthy-kids-feature .media-card img{min-height:280px}}
+
+/* Final release: fourth hero carousel card for the coffee range */
+.hero-image-coffee{width:170px;height:190px;left:1%;bottom:54px;border-radius:22px;transform:rotate(6deg);z-index:1}
+.hero-image-coffee img{object-position:center}
+@media(max-width:1100px){
+  .hero-image-coffee{width:150px;height:168px;left:0;bottom:36px}
+}
+@media(max-width:560px){
+  .hero-v2{min-height:700px}
+  .hero-v2-grid{min-height:700px}
+  .hero-v2-visual{height:440px;max-width:100%;overflow:hidden}
+  .hero-image-main{width:clamp(210px,64vw,300px);height:330px;left:15%;top:45px}
+  .hero-image-mango{width:120px;height:145px;right:0;top:22px}
+  .hero-image-pine{width:130px;height:140px;right:0;bottom:42px}
+  .hero-image-coffee{width:112px;height:128px;left:0;bottom:34px}
+  .hero-stamp{width:78px;height:78px;left:0;bottom:10px;font-size:.48rem}
+  .hero-note{right:2%;top:210px;font-size:.48rem}
+  .hero-dots{bottom:8px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-carousel .hero-card{transition:none!important}
+  .hero-ring{animation:none!important}
+}
+
+.executive-specialty{color:#9a742f;font-size:.78rem;font-weight:700;letter-spacing:.035em;margin-top:-2px}
