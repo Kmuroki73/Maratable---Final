@@ -12,7 +12,7 @@ function clean(value, max) {
 }
 function escapeHtml(value) {
   return value.replace(/[&<>"']/g, char => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[char]));
 }
 
@@ -26,8 +26,7 @@ module.exports = async function handler(req, res) {
   const host = req.headers.host;
   if (origin && host) {
     try {
-      const originHost = new URL(origin).host;
-      if (originHost !== host) return sendJson(res, 403, { error: 'Request origin not allowed.' });
+      if (new URL(origin).host !== host) return sendJson(res, 403, { error: 'Request origin not allowed.' });
     } catch (_) {
       return sendJson(res, 403, { error: 'Invalid request origin.' });
     }
@@ -46,11 +45,11 @@ module.exports = async function handler(req, res) {
   }
   if (!body || typeof body !== 'object') return sendJson(res, 400, { error: 'Invalid form submission.' });
 
-  // Quietly accept honeypot submissions without contacting the mail provider.
   if (clean(body.website, 200)) return sendJson(res, 200, { ok: true });
 
   const name = clean(body.name, 120);
   const email = clean(body.email, 254);
+  const company = clean(body.company, 160);
   const type = clean(body.type || 'General enquiry', 100);
   const message = clean(body.message, 5000);
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,40 +58,41 @@ module.exports = async function handler(req, res) {
     return sendJson(res, 422, { error: 'Please provide a valid name, email address and message.' });
   }
   if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM) {
-    return sendJson(res, 503, { error: 'The contact service is not configured yet. Please email info@maratable.com directly.' });
+    return sendJson(res, 503, { error: 'The contact service is not configured yet. Please try again later or email info@maratablegroup.com directly.' });
   }
 
-  const recipients = (process.env.RESEND_TO || 'info@maratable.com,nancy@maratable.com')
+  const recipients = (process.env.RESEND_TO || 'info@maratablegroup.com')
     .split(',').map(value => value.trim()).filter(Boolean);
-  const safeName = escapeHtml(name);
-  const safeEmail = escapeHtml(email);
-  const safeType = escapeHtml(type);
-  const safeMessage = escapeHtml(message).replace(/\n/g, '<br>');
-  const html = `<h2>New MaraTable website enquiry</h2><p><strong>Name:</strong> ${safeName}</p><p><strong>Email:</strong> ${safeEmail}</p><p><strong>Enquiry type:</strong> ${safeType}</p><p><strong>Message:</strong><br>${safeMessage}</p>`;
+  const html = '<h2>New MaraTable website enquiry</h2>' +
+    '<p><strong>Name:</strong> ' + escapeHtml(name) + '</p>' +
+    '<p><strong>Email:</strong> ' + escapeHtml(email) + '</p>' +
+    '<p><strong>Company:</strong> ' + escapeHtml(company || 'Not provided') + '</p>' +
+    '<p><strong>Enquiry type:</strong> ' + escapeHtml(type) + '</p>' +
+    '<p><strong>Message:</strong><br>' + escapeHtml(message).replace(/\n/g, '<br>') + '</p>';
 
   try {
     const providerResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Authorization': 'Bearer ' + process.env.RESEND_API_KEY,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         from: process.env.RESEND_FROM,
         to: recipients,
         reply_to: email,
-        subject: `[MaraTable Website] ${type}`,
+        subject: '[MaraTable Website] ' + type,
         html
       })
     });
     const result = await providerResponse.json().catch(() => ({}));
     if (!providerResponse.ok) {
       console.error('Resend rejected contact email:', providerResponse.status, result?.message || result?.name || 'provider error');
-      return sendJson(res, 502, { error: 'We could not send your enquiry right now. Please try again or email info@maratable.com.' });
+      return sendJson(res, 502, { error: 'We could not send your enquiry right now. Please try again or email info@maratablegroup.com.' });
     }
     return sendJson(res, 200, { ok: true, id: result.id || null });
   } catch (error) {
     console.error('Contact email provider request failed:', error?.message || 'unknown error');
-    return sendJson(res, 502, { error: 'We could not send your enquiry right now. Please try again or email info@maratable.com.' });
+    return sendJson(res, 502, { error: 'We could not send your enquiry right now. Please try again or email info@maratablegroup.com.' });
   }
 };

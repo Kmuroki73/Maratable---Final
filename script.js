@@ -76,3 +76,25 @@
   };
   document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===map[file]));
 })();
+
+(function () {
+  var key = 'maratable-cookie-consent';
+  var choice;
+  try { choice = localStorage.getItem(key); } catch (error) {}
+  if (choice === 'accepted' || choice === 'rejected') return;
+  var banner = document.createElement('section');
+  banner.className = 'cookie-consent';
+  banner.setAttribute('role', 'region');
+  banner.setAttribute('aria-label', 'Cookie preferences');
+  banner.innerHTML = '<div class="cookie-copy"><span class="cookie-kicker">MaraTable Group</span><h2>We value your privacy</h2><p>We use essential local storage to keep the website working and remember your preferences. Optional analytics cookies will only be used with your consent. You can read more in our <a href="privacy.html">Privacy Policy</a>.</p></div><div class="cookie-actions"><button type="button" class="cookie-reject" data-cookie-choice="rejected">Reject optional</button><button type="button" class="cookie-accept" data-cookie-choice="accepted">Accept cookies</button></div>';
+  document.body.appendChild(banner);
+  banner.querySelectorAll('[data-cookie-choice]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var selected = button.getAttribute('data-cookie-choice');
+      try { localStorage.setItem(key, selected); } catch (error) {}
+      banner.classList.add('is-closing');
+      window.setTimeout(function () { banner.remove(); }, 220);
+      document.dispatchEvent(new CustomEvent('maratable:cookie-consent', { detail: { consent: selected } }));
+    });
+  });
+})();
