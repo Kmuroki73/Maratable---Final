@@ -1,27 +1,33 @@
-# MaraTable Group — final production release
+# Publish the MaraTable release candidate to GitHub
 
-This ZIP is the complete static-site project for the final MaraTable Group release.
+The uploaded source matches the current `main` branch for the core website files. The corrected package is prepared locally and should be reviewed in a separate release branch before production deployment.
 
-## GitHub upload
-1. Download and extract `MaraTable_Group_Final_Production_Release_20261113.zip`.
-2. Open the existing MaraTable repository on GitHub.
-3. Upload/replace the project files at the repository root. Preserve the `assets/` and `api/` folders.
-4. Do not upload `.env` files or API credentials.
-5. Commit with: `Finalise MaraTable Group website and Healthy Kids update`.
+## Windows PowerShell
+1. Extract `MaraTable_Final_Release_Candidate.zip` into a working folder.
+2. Open PowerShell in that folder.
+3. Check the current branch and status before committing:
 
-## Vercel deployment
-- Framework preset: `Other`
-- Root directory: repository root
-- Build command: leave empty
-- Output directory: repository root
-- Install command: leave empty
+```powershell
+git status
+git branch --show-current
+```
 
-This project is static HTML/CSS/JavaScript. Vercel serves the root HTML pages and deploys `api/contact.js` as a serverless function.
+4. If this is a fresh clone, create a release branch from the repository's current main branch:
 
-## Contact form
-The API recipient is fixed to `info@maratablegroup.com`.
-Configure these Vercel environment variables before production:
-- `RESEND_API_KEY`
-- `RESEND_FROM` (a sender address on a domain verified in Resend)
+```powershell
+git switch main
+git pull
+git switch -c release/maratable-final
+```
 
-The form has been tested with a mocked Resend response; perform a real Preview enquiry after configuring the credentials and confirm delivery to `info@maratablegroup.com` before promoting the deployment.
+5. Copy the corrected package contents into the repository folder, then:
+
+```powershell
+git add .
+git commit -m "Prepare MaraTable final release candidate"
+git push -u origin release/maratable-final
+```
+
+6. Import the release branch into Vercel as a Preview deployment. Do not merge or attach the production domain until Resend environment variables are configured and the preview contact test succeeds.
+
+Never commit `.env` files, Resend API keys or other credentials.

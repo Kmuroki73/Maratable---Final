@@ -1,23 +1,59 @@
-# Final release QA audit — 13 November 2026
+# MaraTable Group — Final Submission QA
 
-## Automated checks
-- ZIP integrity / CRC: PASS
-- All 11 HTML pages parsed: PASS
-- Local HTML asset and page references: PASS (no missing local references)
-- Homepage hero carousel: PASS (4 image cards and 4 controls, including roasted coffee)
-- Healthy Kids homepage section and dedicated page: PASS
-- Healthy Kids uses the supplied breakfast image: PASS
-- Healthy Kids copy avoids school-programme positioning: PASS
-- Esther Nyiva profile fields: PASS
-- Contact API recipient fixed to `info@maratablegroup.com`: PASS
-- Mocked contact API call: PASS (HTTP 200; correct recipient; Reply-To retains visitor email)
-- JavaScript syntax checks: PASS
-- Sitemap XML parsing and Healthy Kids URL: PASS
-- robots.txt sitemap reference: PASS
-- No `.env` secret file included: PASS
+Audit date: 14 November 2026  
+Package: MaraTable final responsive release candidate
 
-## Deployment-dependent check
-A real contact-form delivery test requires `RESEND_API_KEY` and a verified `RESEND_FROM` sender in Vercel. Complete this on a Preview deployment before promoting to Production.
+## Scope of this pass
 
-## Scope control
-Existing pages, untouched product imagery and the established MaraTable Group visual system were retained. Changes are limited to the requested product additions, Healthy Kids content/image, Esther's profile, coffee hero slide, contact recipient and related SEO metadata.
+Reviewed all 10 HTML pages, shared stylesheet, JavaScript files, product image references, sitemap, Vercel configuration, navigation targets, page headings, image alt text, duplicate IDs and repeated legacy brand phrases.
+
+## Changes made
+
+- Repositioned the site around African foods and international supply rather than frozen-food-only messaging.
+- Updated the shared top banner and footer language and refreshed the translation dictionary entries for those phrases.
+- Updated the homepage statement to “Food should look as good as it tastes.”
+- Preserved “Good food. Made memorable.”
+- Added a responsive CSS hardening layer for narrow viewports, grid/flex shrink behaviour, navigation, product rails, leadership cards, board profile and long text.
+- Standardised executive portrait dimensions and mobile stacking rules.
+- Converted the Kunde product image from PNG to WebP.
+- Restored the existing `_redirects` file from the repository source.
+- Retained the multi-page site structure and existing Vercel configuration.
+
+## Static checks completed
+
+- All 10 HTML pages contain exactly one H1.
+- No duplicate HTML IDs found.
+- All local image and navigation references checked in the pages resolve to files in the package.
+- All HTML images have alt text.
+- All JavaScript files pass `node --check`.
+- `styles.css` parses without top-level CSS syntax errors.
+- `sitemap.xml` parses as valid XML.
+- `vercel.json` parses as valid JSON.
+- The old homepage statement and old frozen-food top-banner/footer phrases are no longer present in the active page copy or corresponding translation entries.
+- The Kunde image is included as `assets/kunde-leaves.webp`.
+- Existing `_redirects` configuration is retained.
+
+## Not verified in this environment
+
+- Live browser rendering at mobile/tablet/desktop breakpoints. An automated Chromium run was attempted but browser navigation was blocked by the execution environment; therefore no claim of a completed visual device test is made.
+- Real Vercel Preview deployment and production-domain redirects.
+- Real Resend email delivery; deployment environment variables and verified sender domain must be configured.
+- Actual customer enquiry receipt and reply workflow.
+- Google Analytics reporting; the real GA4 Measurement ID must be supplied.
+- Search Console submission and indexing.
+- Human review of German, French, Italian and Spanish translations.
+- Final approval of board portrait and all leadership profile content by MaraTable.
+
+## Release recommendation
+
+This package has passed the static checks listed above and includes the responsive overflow hardening changes. Before production, deploy it to a Vercel Preview and test every page at 360px, 390px, 430px, tablet and desktop widths. Submit one test contact enquiry and verify delivery. Production should only be promoted after those two checks and client approval.
+
+No production deployment or GitHub branch update was performed as part of this packaging pass.
+
+
+## Final heading and search-language pass
+- Replaced slogan-led page headings with plain-language headings describing MaraTable's actual services and product range.
+- Homepage H1 now targets African food products for global markets; supporting headings describe wholesale/retail, product range, sourcing and food supply enquiries.
+- Updated About, Products, International Supply, Quality, Responsibility, Store, Suppliers, Contact and Investors page headings.
+- Kept “Good food. Made memorable.” as a short brand tagline rather than using it as the main SEO heading.
+- Removed the old “Food should look as good as it feels” headline and replaced the category-strip labels with clear product/channel language.

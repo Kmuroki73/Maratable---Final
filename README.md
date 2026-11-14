@@ -28,7 +28,7 @@ The contact form posts to the first-party Vercel function at `/api/contact`, whi
 Configure these environment variables in Vercel (Preview and Production as appropriate):
 - `RESEND_API_KEY` — private Resend API key
 - `RESEND_FROM` — sender using a domain verified in Resend, e.g. `MaraTable Website <website@maratable.com>`
-- `RESEND_TO` — optional comma-separated recipients; defaults to `info@maratablegroup.com,nancy@maratable.com`
+- `RESEND_TO` — optional comma-separated recipients; defaults to `info@maratable.com,nancy@maratable.com`
 
 Before launch:
 1. Verify `maratable.com` (or the chosen sending subdomain) in Resend and publish the DNS records Resend supplies.

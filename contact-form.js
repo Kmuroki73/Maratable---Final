@@ -46,12 +46,12 @@
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || 'Your message could not be sent. Please try again.');
-      status.textContent = message('Thank you. Your enquiry has been sent to MaraTable Group. We will be in touch.');
+      status.textContent = message('Thank you. Your enquiry has been sent to MaraTable. We will be in touch.');
       status.classList.add('success');
       form.reset();
       document.dispatchEvent(new CustomEvent('maratable:contact-sent'));
     } catch (error) {
-      status.textContent = message('We could not send your message. Please email info@maratablegroup.com or contact us on WhatsApp.');
+      status.textContent = message('We could not send your message. Please email info@maratable.com or contact us on WhatsApp.');
       status.classList.add('error');
     } finally {
       button.disabled = false;
