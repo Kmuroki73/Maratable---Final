@@ -20,29 +20,66 @@ jobs:
             exit 1
           fi
 
-          RESPONSE="$(curl --silent --show-error --fail \
+          echo "Checking personal/default project scope..."
+          PERSONAL="$(curl --silent --show-error --fail \
             -H "Authorization: Bearer ${VERCEL_TOKEN}" \
             "https://api.vercel.com/v9/projects?limit=100")"
 
-          node -e '
-            const data = JSON.parse(process.argv[1]);
-            const projects = data.projects || [];
-            if (!projects.length) {
-              console.log("No projects were returned. Check token permissions and account access.");
-              process.exit(0);
-            }
-            const matches = projects.filter(p => /mara/i.test(p.name || ""));
-            const list = matches.length ? matches : projects;
-            console.log(matches.length
-              ? "Matching MaraTable project(s):"
-              : "No project name matched MaraTable. Available projects:");
-            for (const p of list) {
-              console.log(JSON.stringify({
+          echo "Checking teams accessible to this token..."
+          TEAMS="$(curl --silent --show-error --fail \
+            -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            "https://api.vercel.com/v2/teams?limit=100" || true)"
+
+          export PERSONAL TEAMS
+          node <<'NODE'
+          const personal = JSON.parse(process.env.PERSONAL || "{}");
+          const teamsResponse = JSON.parse(process.env.TEAMS || "{}");
+          const personalProjects = personal.projects || [];
+          const teams = teamsResponse.teams || [];
+
+          console.log("Personal/default scope project count:", personalProjects.length);
+          console.log("Accessible team count:", teams.length);
+
+          const found = [];
+          function addProjects(projects, team) {
+            for (const p of projects || []) {
+              found.push({
                 name: p.name,
                 projectId: p.id,
                 ownerId: p.teamId || p.accountId || null,
-                teamId: p.teamId || null,
-                accountId: p.accountId || null
-              }));
+                teamId: p.teamId || (team && team.id) || null,
+                accountId: p.accountId || null,
+                teamName: team ? team.name : null
+              });
             }
-          ' "$RESPONSE"
+          }
+          addProjects(personalProjects, null);
+
+          for (const team of teams) {
+            if (!team.id) continue;
+            console.log("Checking team:", team.name || "(unnamed)", "ID:", team.id);
+            const { execFileSync } = require("node:child_process");
+            try {
+              const raw = execFileSync("curl", [
+                "--silent", "--show-error", "--fail",
+                "-H", "Authorization: Bearer " + process.env.VERCEL_TOKEN,
+                "https://api.vercel.com/v9/projects?limit=100&teamId=" + encodeURIComponent(team.id)
+              ], { encoding: "utf8" });
+              const response = JSON.parse(raw);
+              addProjects(response.projects || [], team);
+            } catch (e) {
+              console.log("Could not list projects for this team.");
+            }
+          }
+
+          const unique = [...new Map(found.map(p => [p.projectId, p])).values()];
+          const matches = unique.filter(p => /mara/i.test(p.name || ""));
+          const results = matches.length ? matches : unique;
+          console.log(matches.length
+            ? "Matching MaraTable project(s):"
+            : "No project name matched MaraTable. Accessible project list:");
+          for (const p of results) console.log(JSON.stringify(p));
+          if (!unique.length) {
+            console.log("No projects were visible in personal or accessible team scopes. Token account, permissions, or project ownership may need checking.");
+          }
+          NODE
