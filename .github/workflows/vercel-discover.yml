@@ -1,0 +1,48 @@
+name: Discover Vercel project
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find MaraTable project details
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${VERCEL_TOKEN:-}" ]; then
+            echo "::error::VERCEL_TOKEN is missing from GitHub Actions repository secrets."
+            exit 1
+          fi
+
+          RESPONSE="$(curl --silent --show-error --fail \
+            -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            "https://api.vercel.com/v9/projects?limit=100")"
+
+          node -e '
+            const data = JSON.parse(process.argv[1]);
+            const projects = data.projects || [];
+            if (!projects.length) {
+              console.log("No projects were returned. Check token permissions and account access.");
+              process.exit(0);
+            }
+            const matches = projects.filter(p => /mara/i.test(p.name || ""));
+            const list = matches.length ? matches : projects;
+            console.log(matches.length
+              ? "Matching MaraTable project(s):"
+              : "No project name matched MaraTable. Available projects:");
+            for (const p of list) {
+              console.log(JSON.stringify({
+                name: p.name,
+                projectId: p.id,
+                ownerId: p.teamId || p.accountId || null,
+                teamId: p.teamId || null,
+                accountId: p.accountId || null
+              }));
+            }
+          ' "$RESPONSE"
