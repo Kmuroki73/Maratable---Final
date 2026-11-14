@@ -51,7 +51,7 @@
       form.reset();
       document.dispatchEvent(new CustomEvent('maratable:contact-sent'));
     } catch (error) {
-      status.textContent = message('We could not send your message. Please email info@maratable.com or contact us on WhatsApp.');
+      status.textContent = message('We could not send your message. Please email info@maratablegroup.com.');
       status.classList.add('error');
     } finally {
       button.disabled = false;

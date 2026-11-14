@@ -1,7 +1,7 @@
 # MaraTable Group — website handover
 
 ## What is included
-- Ten static website pages
+- Eleven static website pages including Healthy Kids
 - Responsive stylesheet and front-end JavaScript
 - Approved editorial product and farm photography
 - Nancy's existing portrait and the MaraTable logo
@@ -24,7 +24,7 @@ The website is static HTML and does not need a build command. Vercel detects `ap
 In Vercel Project Settings → Environment Variables, add:
 - `RESEND_API_KEY`
 - `RESEND_FROM`
-- `RESEND_TO` (optional; defaults to `info@maratable.com,nancy@maratable.com`)
+- `RESEND_TO` (optional; defaults to `info@maratablegroup.com`)
 
 The sender domain must first be verified in Resend and its DNS records published. Never place the API key in HTML, browser JavaScript or Git.
 
