@@ -72,7 +72,7 @@
 (function(){
   const file=location.pathname.split('/').pop()||'index.html';
   const map={
-    'index.html':'home','company.html':'about','products.html':'products','resources.html':'quality','responsibility.html':'responsibility','export.html':'supply','investors.html':'investors','suppliers.html':'suppliers'
+    'index.html':'home','company.html':'about','products.html':'products','resources.html':'quality','responsibility.html':'responsibility','export.html':'supply','investors.html':'investors','suppliers.html':'partners','contact.html':'contact','export.html':'partners','investors.html':'partners'
   };
   document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===map[file]));
 })();
