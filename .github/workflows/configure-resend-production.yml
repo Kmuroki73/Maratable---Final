@@ -1,0 +1,95 @@
+name: Configure MaraTable Resend and redeploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Resend settings to the existing Vercel project
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM: ${{ secrets.RESEND_FROM }}
+          RESEND_TO: ${{ secrets.RESEND_TO }}
+        run: |
+          set -euo pipefail
+
+          PROJECT_ID="prj_Qgs6YaiCjTSFQGV03iAAz8FK9h6Z"
+          TEAM_ID="team_tKTyI2K8BINdcAKBvLAS72Hz"
+
+          for name in VERCEL_TOKEN RESEND_API_KEY RESEND_FROM RESEND_TO; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::Required GitHub Actions secret $name is missing."
+              exit 1
+            fi
+          done
+
+          add_env() {
+            local key="$1"
+            local value="$2"
+            local payload response status
+            payload="$(jq -n --arg key "$key" --arg value "$value" '{
+              key: $key,
+              value: $value,
+              type: "encrypted",
+              target: ["production"]
+            }')"
+
+            status="$(curl --silent --show-error \
+              --output /tmp/vercel-env-response.json \
+              --write-out "%{http_code}" \
+              --request POST \
+              --url "https://api.vercel.com/v10/projects/${PROJECT_ID}/env?teamId=${TEAM_ID}&upsert=true" \
+              --header "Authorization: Bearer ${VERCEL_TOKEN}" \
+              --header "Content-Type: application/json" \
+              --data "$payload")"
+
+            if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
+              echo "::error::Vercel rejected environment variable $key (HTTP $status)."
+              jq -r '.error.message // .error.code // "No error detail returned."' /tmp/vercel-env-response.json 2>/dev/null || true
+              exit 1
+            fi
+            echo "Configured $key for Vercel Production (value hidden)."
+          }
+
+          add_env "RESEND_API_KEY" "$RESEND_API_KEY"
+          add_env "RESEND_FROM" "$RESEND_FROM"
+          add_env "RESEND_TO" "$RESEND_TO"
+
+      - name: Find latest production deployment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          RESPONSE="$(curl --silent --show-error --fail \
+            --get "https://api.vercel.com/v6/deployments" \
+            --header "Authorization: Bearer ${VERCEL_TOKEN}" \
+            --data-urlencode "projectId=prj_Qgs6YaiCjTSFQGV03iAAz8FK9h6Z" \
+            --data-urlencode "target=production" \
+            --data-urlencode "limit=1" \
+            --data-urlencode "teamId=team_tKTyI2K8BINdcAKBvLAS72Hz")"
+
+          DEPLOYMENT_URL="$(printf '%s' "$RESPONSE" | jq -r '.deployments[0].url // empty')"
+          if [ -z "$DEPLOYMENT_URL" ]; then
+            echo "::error::No production deployment was returned for the existing MaraTable project."
+            exit 1
+          fi
+          echo "LATEST_DEPLOYMENT_URL=$DEPLOYMENT_URL" >> "$GITHUB_ENV"
+          echo "Found the latest production deployment."
+
+      - name: Redeploy existing MaraTable production deployment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          npx --yes vercel@latest redeploy "https://${LATEST_DEPLOYMENT_URL}" \
+            --target=production \
+            --scope="25lingtech-1996s-projects" \
+            --token="${VERCEL_TOKEN}" \
+            --no-wait
+          echo "Redeploy request submitted. No secret values were printed."
