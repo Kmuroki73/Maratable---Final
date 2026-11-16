@@ -10,8 +10,15 @@
   let widgetReady = false;
   let widgetError = 'The secure contact form is not configured yet. Please email info@maratablegroup.com or contact us on WhatsApp.';
 
+  function translate(message) {
+    const map = { de: 0, fr: 1, it: 2, es: 3 };
+    const language = document.documentElement.lang || 'en';
+    const entry = (window.MARATABLE_TRANSLATIONS || {})[message];
+    return language === 'en' || !entry ? message : (entry[map[language]] || message);
+  }
+
   function showStatus(message, kind) {
-    status.textContent = message;
+    status.textContent = translate(message);
     status.className = 'form-status' + (kind ? ' ' + kind : '');
   }
 
@@ -66,6 +73,7 @@
       }
     });
     widgetReady = true;
+    return true;
   }
 
   const turnstileReady = configureTurnstile().catch(error => {
@@ -110,7 +118,7 @@
 
     button.disabled = true;
     button.setAttribute('aria-busy', 'true');
-    button.textContent = 'Sending…';
+    button.textContent = translate('Sending…');
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -132,7 +140,7 @@
     } finally {
       button.disabled = false;
       button.removeAttribute('aria-busy');
-      button.textContent = 'Send enquiry →';
+      button.textContent = translate('Send enquiry →');
     }
   });
 })();
