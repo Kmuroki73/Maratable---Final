@@ -9,7 +9,7 @@ function sendJson(res, status, payload) {
   return res.end(JSON.stringify(payload));
 }
 function clean(value, max) {
-  return String(value || '').replace(/[\\u0000-\\u001f\\u007f]/g, ' ').trim().slice(0, max);
+  return String(value || '').replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max);
 }
 function escapeHtml(value) {
   return value.replace(/[&<>"']/g, char => ({
@@ -21,7 +21,7 @@ function recipients() {
   const list = configured
     ? configured.split(',').map(value => value.trim()).filter(Boolean)
     : DEFAULT_RECIPIENTS;
-  return [...new Set(list)].filter(value => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value));
+  return [...new Set(list)].filter(value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value));
 }
 
 async function verifyTurnstile(token, ip, host) {
@@ -140,7 +140,7 @@ module.exports = async function handler(req, res) {
   const type = clean(body.type || 'General enquiry', 100);
   const message = clean(body.message, 5000);
   const token = clean(body.turnstileToken, 2048);
-  const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (name.length < 2 || !emailPattern.test(email) || message.length < 5) {
     return sendJson(res, 422, { error: 'Please provide a valid name, email address and message.' });
@@ -157,7 +157,7 @@ module.exports = async function handler(req, res) {
     '<p><strong>Email:</strong> ' + escapeHtml(email) + '</p>' +
     '<p><strong>Company:</strong> ' + escapeHtml(company || 'Not provided') + '</p>' +
     '<p><strong>Enquiry type:</strong> ' + escapeHtml(type) + '</p>' +
-    '<p><strong>Message:</strong><br>' + escapeHtml(message).replace(/\\n/g, '<br>') + '</p>';
+    '<p><strong>Message:</strong><br>' + escapeHtml(message).replace(/\n/g, '<br>') + '</p>';
   const text = [
     'New MaraTable website enquiry',
     'Name: ' + name,
@@ -167,7 +167,7 @@ module.exports = async function handler(req, res) {
     '',
     'Message:',
     message
-  ].join('\\n');
+  ].join('\n');
 
   try {
     if (process.env.SMTP2GO_API_KEY) {
