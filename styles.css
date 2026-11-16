@@ -313,3 +313,16 @@ img,video,iframe{max-width:100%}
 @media(max-width:370px){
   .brand .name{font-size:.77rem}
 }
+
+
+/* Healthy Kids photo: clean portrait crop, with both children and fruit kept in frame. */
+.kids-photo{
+  aspect-ratio:4 / 5;
+  align-items:stretch;
+}
+.kids-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 42%;
+}

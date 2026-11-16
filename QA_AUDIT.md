@@ -1,23 +1,27 @@
-# Final release QA audit — 13 November 2026
+# MaraTable final release checklist — 16 November 2026
 
-## Automated checks
-- ZIP integrity / CRC: PASS
-- All 11 HTML pages parsed: PASS
-- Local HTML asset and page references: PASS (no missing local references)
-- Homepage hero carousel: PASS (4 image cards and 4 controls, including roasted coffee)
-- Healthy Kids homepage section and dedicated page: PASS
-- Healthy Kids uses the supplied breakfast image: PASS
-- Healthy Kids copy avoids school-programme positioning: PASS
-- Esther Nyiva profile fields: PASS
-- Contact API recipient fixed to `info@maratablegroup.com`: PASS
-- Mocked contact API call: PASS (HTTP 200; correct recipient; Reply-To retains visitor email)
-- JavaScript syntax checks: PASS
-- Sitemap XML parsing and Healthy Kids URL: PASS
-- robots.txt sitemap reference: PASS
-- No `.env` secret file included: PASS
+## Requested refinements
+- [x] Contact card label changed to **Reach Out To Us**; card, phone, email, WhatsApp, locations and contact form preserved.
+- [x] Main navigation typography and spacing retained at the larger Nov 16 settings.
+- [x] Dropdown items are alphabetically ordered in the HTML and re-sorted for the active language by `i18n.js`.
+- [x] Dropdown typography retained at the larger Nov 16 setting.
+- [x] Image framing uses deliberate `object-fit: cover` / centered positioning for the hero and catalogue imagery; no blanket zoom.
+- [x] Removed the repeated “Premium natural foods from Africa” portfolio headline in favour of “A focused African food portfolio”.
+- [x] Healthy Kids image replaced with a real Pexels photograph of two children sharing fresh fruit; image framing set to a responsive 4:5 crop.
+- [x] Healthy Kids image and alt text updated on both the homepage and dedicated page, including the social preview image.
+- [x] Steven Saltzmann listed as **Board Member**; description limited to sharing his experience and providing guidance.
+- [x] Kunde product section continues to use the existing dedicated kunde product photograph.
+- [x] Germany-facing international supply SEO metadata retained.
+- [x] Existing SMTP2GO/contact API, Turnstile and contact form submission flow left unchanged.
 
-## Deployment-dependent check
-A real contact-form delivery test requires `RESEND_API_KEY` and a verified `RESEND_FROM` sender in Vercel. Complete this on a Preview deployment before promoting to Production.
+## Verification
+- [x] Repository source checked against the agreed scope before editing.
+- [x] Exact replacement assertions passed for all targeted text changes.
+- [x] No edits made to the contact API, environment variables or email delivery code.
+- [x] Existing alphabetical dropdown sorting logic retained.
+- [x] Existing live email delivery was reported successful by the site owner before this final refinement.
 
-## Scope control
-Existing pages, untouched product imagery and the established MaraTable Group visual system were retained. Changes are limited to the requested product additions, Healthy Kids content/image, Esther's profile, coffee hero slide, contact recipient and related SEO metadata.
+## Deployment-dependent checks
+- [ ] Confirm the new commit has deployed to the Production domain.
+- [ ] Visually verify the Healthy Kids crop on desktop and mobile after deployment.
+- [ ] Submit one final live contact enquiry after deployment to confirm email delivery remains healthy.
