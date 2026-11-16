@@ -74,11 +74,12 @@ async function sendWithSmtp2Go({ from, to, subject, html, text, replyTo }) {
     })
   });
   const result = await response.json().catch(() => ({}));
-  const data = result.data || result;
+  const data = result.data || result.email_response || result;
   const failedRaw = data.failed;
   const failedCount = Array.isArray(failedRaw) ? failedRaw.length : Number(failedRaw || 0);
   const failures = Array.isArray(data.failures) ? data.failures : [];
-  if (!response.ok || failedCount > 0 || failures.length > 0 || result.error) {
+  const succeededCount = Number(data.succeeded || 0);
+  if (!response.ok || succeededCount < to.length || failedCount > 0 || failures.length > 0 || result.error || data.error) {
     throw new Error('SMTP2GO did not accept the message.');
   }
   return result;
