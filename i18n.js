@@ -10,9 +10,7 @@
   const dictionary = window.MARATABLE_TRANSLATIONS || {};
   const currentUrl = new URL(window.location.href);
   const queryLanguage = currentUrl.searchParams.get('lang');
-  let language = languages[queryLanguage]
-    ? queryLanguage
-    : 'en';
+  let language = languages[queryLanguage] ? queryLanguage : 'en';
 
   if (!languages[queryLanguage]) {
     try {
@@ -22,7 +20,8 @@
   }
 
   function translated(value, lang) {
-    const entry = dictionary[value.replace(/\\s+/g, ' ').trim()];
+    const key = value.replace(/\s+/g, ' ').trim();
+    const entry = dictionary[key];
     return lang === 'en' ? value : (entry ? (entry[languageIndex[lang]] || value) : value);
   }
 
@@ -41,11 +40,11 @@
     while ((node = walker.nextNode())) {
       if (node.__mtOriginal === undefined) node.__mtOriginal = node.nodeValue;
       const original = node.__mtOriginal;
-      const leading = (original.match(/^\\s*/) || [''])[0];
-      const trailing = (original.match(/\\s*$/) || [''])[0];
+      const leading = (original.match(/^\s*/) || [''])[0];
+      const trailing = (original.match(/\s*$/) || [''])[0];
       const end = trailing.length ? original.length - trailing.length : original.length;
       const text = original.slice(leading.length, end);
-      const key = text.replace(/\\s+/g, ' ').trim();
+      const key = text.replace(/\s+/g, ' ').trim();
       const entry = dictionary[key];
       const value = lang === 'en' ? text : (entry ? (entry[languageIndex[lang]] || text) : text);
       node.nodeValue = leading + value + trailing;
@@ -134,12 +133,14 @@
     sortLanguageLists(lang);
     try { localStorage.setItem('maratable-language', lang); } catch (_) {}
     document.querySelectorAll('[data-language-select]').forEach(select => { select.value = lang; });
+
     if (updateUrl) {
       const url = new URL(window.location.href);
       if (lang === 'en') url.searchParams.delete('lang');
       else url.searchParams.set('lang', lang);
       window.history.replaceState({}, '', url.pathname + url.search + url.hash);
     }
+
     updateLanguageUrls(lang);
     document.dispatchEvent(new CustomEvent('maratable:language-changed', { detail: { language: lang } }));
   }
@@ -147,16 +148,19 @@
   function addSelector() {
     const nav = document.querySelector('.nav-inner');
     if (!nav || nav.querySelector('[data-language-select]')) return;
+
     const select = document.createElement('select');
     select.className = 'language-select';
     select.setAttribute('data-language-select', '');
-    select.setAttribute('aria-label', 'Website language');
+    select.setAttribute('aria-label', translated('Website language', language));
+
     Object.entries(languages).forEach(([code, name]) => {
       const option = document.createElement('option');
       option.value = code;
       option.textContent = code.toUpperCase() + ' · ' + name;
       select.appendChild(option);
     });
+
     select.value = language;
     select.addEventListener('change', () => applyLanguage(select.value, true));
     const menu = nav.querySelector('[data-menu]');
