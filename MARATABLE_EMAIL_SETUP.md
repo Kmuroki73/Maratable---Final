@@ -14,7 +14,7 @@ Set these for Production (and Preview while testing):
 
 Recipients are fixed server-side to:
 - info@maratablegroup.com
-- maya@maratablegroup.com
+- e.nyiva@maratablegroup.com
 
 ## Cloudflare Turnstile
 
