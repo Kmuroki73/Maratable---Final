@@ -9,7 +9,7 @@ function sendJson(res, status, payload) {
   return res.end(JSON.stringify(payload));
 }
 function clean(value, max) {
-  return String(value || '').replace(/[\\u0000-\\u001f\\u007f]/g, ' ').trim().slice(0, max);
+  return String(value || '').replace(/[\x00-\x1f\x7f]/g, ' ').trim().slice(0, max);
 }
 function escapeHtml(value) {
   return value.replace(/[&<>"']/g, char => ({
@@ -73,7 +73,7 @@ module.exports = async function handler(req, res) {
   const type = clean(body.type || 'General enquiry', 100);
   const message = clean(body.message, 5000);
   const captchaToken = clean(body.captchaToken, 4096);
-  const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (name.length < 2 || !emailPattern.test(email) || message.length < 5) {
     return sendJson(res, 422, { error: 'Please provide a valid name, email address and message.' });
