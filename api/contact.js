@@ -1,7 +1,7 @@
 const WINDOW_MS = 60_000;
 const MAX_REQUESTS = 5;
 const requests = new Map();
-const RECIPIENTS = ['info@maratablegroup.com', 'maya@maratablegroup.com'];
+const RECIPIENTS = ['info@maratablegroup.com', 'e.nyiva@maratablegroup.com'];
 
 function sendJson(res, status, payload) {
   res.status(status).setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -33,7 +33,7 @@ async function verifyTurnstile(token, ip) {
   if (!result.success) return false;
   const allowedHosts = (process.env.TURNSTILE_EXPECTED_HOSTNAMES || 'maratable.com,www.maratable.com')
     .split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
-  if (result.hostname && !allowedHosts.includes(String(result.hostname).toLowerCase())) return false;
+  if (!result.hostname || !allowedHosts.includes(String(result.hostname).toLowerCase())) return false;
   return true;
 }
 
