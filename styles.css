@@ -305,3 +305,16 @@ img,video,iframe{max-width:100%}
   object-fit:cover;
   object-position:center 42%;
 }
+
+/* Nov 16 footer readability and responsive alignment */
+.footer h4{font-size:.82rem;letter-spacing:.17em}
+.footer a,.footer p{font-size:.84rem;line-height:1.65}
+.footer-locations{font-size:.82rem}
+.footer-bottom{font-size:.76rem}
+@media(max-width:560px){
+  .footer-grid>div{text-align:center}
+  .footer .footer-brand{justify-content:center}
+  .footer-brand-col p{margin-left:auto;margin-right:auto}
+  .footer-grid>div:not(:first-child) a{width:fit-content;max-width:100%;margin-left:auto;margin-right:auto}
+  .footer-bottom{text-align:center;align-items:center}
+}
