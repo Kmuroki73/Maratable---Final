@@ -104,12 +104,34 @@
     });
   }
 
+  function sortLanguageLists(lang) {
+    function sortLinks(container) {
+      const links = Array.from(container.children).filter(child => child.tagName === 'A');
+      links.sort((a, b) => a.textContent.trim().localeCompare(b.textContent.trim(), lang, { sensitivity: 'base' }));
+      links.forEach(link => container.appendChild(link));
+    }
+
+    document.querySelectorAll('.nav-dropdown, .drawer details').forEach(sortLinks);
+
+    document.querySelectorAll('.footer-grid > div:not(.footer-brand-col)').forEach(column => {
+      const items = Array.from(column.children).filter(child =>
+        child.tagName === 'A' || child.classList.contains('footer-locations')
+      );
+      const cta = items.find(item => item.classList.contains('nav-cta'));
+      const sortable = items.filter(item => item !== cta);
+      sortable.sort((a, b) => a.textContent.trim().localeCompare(b.textContent.trim(), lang, { sensitivity: 'base' }));
+      sortable.forEach(item => column.insertBefore(item, cta || null));
+      if (cta) column.appendChild(cta);
+    });
+  }
+
   function applyLanguage(lang, updateUrl) {
     if (!languages[lang]) return;
     language = lang;
     document.documentElement.lang = lang;
     translateTextNodes(lang);
     translateAttributes(lang);
+    sortLanguageLists(lang);
     try { localStorage.setItem('maratable-language', lang); } catch (_) {}
     document.querySelectorAll('[data-language-select]').forEach(select => { select.value = lang; });
     if (updateUrl) {
