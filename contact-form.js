@@ -101,7 +101,7 @@
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || 'Your message could not be sent. Please try again.');
-      setStatus('Thank you. Your enquiry has been sent to MaraTable Group. We will be in touch shortly.', 'success');
+      setStatus('Thank you. Your enquiry has been sent to both MaraTable contacts. We will be in touch.', 'success');
       form.reset();
       captchaTokenInput.value = '';
       captchaReady = false;
