@@ -46,7 +46,7 @@ async function verifyTurnstile(token, ip, host) {
     }
     const expectedHost = String(host || '').split(':')[0].toLowerCase();
     const verifiedHost = String(result.hostname || '').toLowerCase();
-    if (expectedHost && verifiedHost && expectedHost !== verifiedHost) {
+    if (!verifiedHost || (expectedHost && expectedHost !== verifiedHost)) {
       return { ok: false, status: 403, error: 'The verification check did not match this website. Please refresh and try again.' };
     }
     return { ok: true };
