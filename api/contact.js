@@ -83,6 +83,9 @@ module.exports = async function handler(req, res) {
     return sendJson(res, 503, { error: 'The email service is not configured yet. Please try again shortly or email info@maratablegroup.com.' });
   }
 
+  recent.push(now);
+  requests.set(ip, recent);
+
   try {
     const captchaValid = await verifyTurnstile(captchaToken, ip);
     if (!captchaValid) return sendJson(res, 403, { error: 'The security check expired or could not be verified. Please try it again.' });
@@ -90,9 +93,6 @@ module.exports = async function handler(req, res) {
     console.error('Turnstile verification unavailable:', error?.message || 'unknown error');
     return sendJson(res, 503, { error: 'The security check is temporarily unavailable. Please refresh and try again.' });
   }
-
-  recent.push(now);
-  requests.set(ip, recent);
 
   const html = '<h2>New MaraTable website enquiry</h2>' +
     '<p><strong>Name:</strong> ' + escapeHtml(name) + '</p>' +
