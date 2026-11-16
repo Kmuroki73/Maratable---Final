@@ -245,3 +245,21 @@ img,video,iframe{max-width:100%}
 .feature-tile:hover img{transform:scale(1.13);object-position:center 62%}
 .catalog-card{overflow:hidden}
 .catalog-card img{object-position:center 72%;transform:scale(1.05)}
+
+
+/* Branded product artwork contains a repeated top-line slogan. Keep the same approved image files,
+   but frame the photos lower so the embedded banner is kept outside the visible card crop. */
+.feature-tile img[src*="-new."] ,
+.catalog-card img[src*="-new."],
+.hero-image img[src*="-new."]{
+  object-position:50% 100%;
+  transform:scale(1.22);
+  transform-origin:center bottom;
+}
+.feature-tile:hover img[src*="-new."]{transform:scale(1.26);transform-origin:center bottom}
+@media(max-width:560px){
+  .feature-tile img[src*="-new."],
+  .catalog-card img[src*="-new."],
+  .hero-image img[src*="-new."]{transform:scale(1.14);transform-origin:center bottom}
+  .feature-tile:hover img[src*="-new."]{transform:scale(1.16)}
+}
