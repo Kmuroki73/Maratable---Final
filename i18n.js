@@ -144,6 +144,6 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     addSelector();
-    applyLanguage(language, false);
+    applyLanguage(language, queryLanguage !== (language === 'en' ? null : language));
   });
 })();
