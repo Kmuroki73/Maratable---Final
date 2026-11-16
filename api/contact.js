@@ -99,7 +99,7 @@ module.exports = async function handler(req, res) {
     '<p><strong>Email:</strong> ' + escapeHtml(email) + '</p>' +
     '<p><strong>Company:</strong> ' + escapeHtml(company || 'Not provided') + '</p>' +
     '<p><strong>Enquiry type:</strong> ' + escapeHtml(type) + '</p>' +
-    '<p><strong>Message:</strong><br>' + escapeHtml(message).replace(/\\n/g, '<br>') + '</p>';
+    '<p><strong>Message:</strong><br>' + escapeHtml(message).replace(/\n/g, '<br>') + '</p>';
 
   const textBody = [
     'New MaraTable website enquiry',
@@ -109,7 +109,7 @@ module.exports = async function handler(req, res) {
     'Enquiry type: ' + type,
     '',
     message
-  ].join('\\n');
+  ].join('\n');
 
   try {
     const providerResponse = await fetch('https://api.smtp2go.com/v3/email/send', {
