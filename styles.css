@@ -265,19 +265,26 @@ img,video,iframe{max-width:100%}
   border-radius:28px;
   transform:rotate(0);
 }
-.kids-photo{overflow:hidden}
+/* Let the full Healthy Kids artwork breathe: retain both children, food and Africa branding. */
+.kids-photo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:#f5f0e6;
+}
 .kids-photo img{
   display:block;
   width:100%;
-  min-height:390px;
-  height:100%;
-  object-fit:cover;
-  object-position:left center;
-  transform:scale(1.27);
-  transform-origin:left center;
+  height:auto;
+  min-height:0;
+  object-fit:contain;
+  object-position:center;
+  transform:none;
 }
+.healthy-kids-feature .kids-photo img{min-height:0}
 @media(max-width:760px){
-  .kids-photo img{min-height:280px;transform:scale(1.2)}
+  .kids-photo img{min-height:0}
 }
 @media(max-width:560px){
   .hero-image-main{
