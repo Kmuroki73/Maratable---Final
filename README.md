@@ -4,7 +4,7 @@ Static HTML/CSS/JavaScript website for MaraTable Group. The site has no front-en
 
 ## Pages
 - `index.html` — homepage
-- `company.html` — company story and Nancy Hauschild profile
+- `company.html` — company story .
 - `products.html` — frozen fruits, vegetables, berries, peas, honey, roasted coffee, unroasted green coffee and foodservice
 - `resources.html` — quality approach
 - `responsibility.html` — responsibility and sourcing
